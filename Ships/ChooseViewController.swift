@@ -7,7 +7,7 @@
 //
 
 import UIKit
-var color = "White"
+var mapa = "Woda"
 var name = "User"
 class ChooseViewController: UIViewController {
     var button = dropDownBtn()
@@ -35,7 +35,7 @@ class ChooseViewController: UIViewController {
         
         /////////
         
-        print(color)
+        print(mapa)
         super.viewDidLoad()
         
         button = dropDownBtn.init(frame:CGRect(x:0, y: 0, width: 0, height: 0))
@@ -48,7 +48,7 @@ class ChooseViewController: UIViewController {
         button.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         
-        button.dropView.dropDownOptions = ["Black","Green","Yellow","Red","White"]
+        button.dropView.dropDownOptions = ["Woda","Trawa","Wulkan","Ogien","Lod", "Ksiezyc"]
         // Do any additional setup after loading the view.
     }
 
