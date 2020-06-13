@@ -20,8 +20,8 @@ class GameViewController: UIViewController {
     var status = 0
     var ships = 0
     //var ownBoard = [0,0,0,0,0,0,0,0,0,0 ]
-    var ownBoard = Array(repeating: 0, count: 100)
-    var enemyBoard = Array(repeating: 0, count: 100)
+    var ownBoard = Array(repeating: 0, count: 101)
+    var enemyBoard = Array(repeating: 0, count: 101)
     var numbers = [1,2,3,4,5,6,7,8,9]
     var countShipShootedByMe = 0
     var countShipShootedByEnemy = 0
@@ -44,17 +44,56 @@ class GameViewController: UIViewController {
         }
     }
     
+    
+    @IBAction func buttonPutShips(_ sender: Any) {
+        status = 1
+        losujRozstawienieStatkow(n:3, max:9)
+        buttonPutShips.isHidden = true
+        textPutShips.isHidden = true
+        boardEnemy.isHidden = false
+        statusPutShips.isHidden=true
+        infoEnemyBoard.isHidden = false
+        
+        for n in 101...200{
+            let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
+            tempButton?.isHidden = false
+        }
+        
+        for n in 1...100{
+            if ownBoard[n] == 1{
+                let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
+                tempButton?.isEnabled = false
+            }
+            
+        }
+        //wypisanie wartości tablic
+//        for n in 1...9{
+//            print(ownBoard[n])
+//        }
+        print(" ")
+        for n in 1...10{
+            print(enemyBoard[(n*10)-9], enemyBoard[(n*10)-8], enemyBoard[(n*10)-7], enemyBoard[(n*10)-6], enemyBoard[(n*10)-5], enemyBoard[(n*10)-4], enemyBoard[(n*10)-3], enemyBoard[(n*10)-2], enemyBoard[(n*10)-1], enemyBoard[(n*10)])
+            
+
+        }
+        
+        
+    }
+    
+    
     @IBAction func shipsAction(_ sender: AnyObject) {
         if status == 0{
             
             a = sender.tag
+            print(a)
             if ownBoard[a] == 1{
                 let tempButton = self.view.viewWithTag(Int(a)) as? UIButton
                 tempButton?.backgroundColor = UIColor.white.withAlphaComponent(1)
                 ownBoard[a] = 0
                 ships = ships - 1
+                statusPutShips.text = String(ships) + "/10"
                 
-                for n in 1...9{
+                for n in 1...100{
                     if ownBoard[n] == 0{
                         let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
                         tempButton?.isEnabled = true
@@ -68,9 +107,10 @@ class GameViewController: UIViewController {
                 let tempButton = self.view.viewWithTag(Int(a)) as? UIButton
                 tempButton?.backgroundColor = UIColor.blue.withAlphaComponent(0.6)
                 ships = ships + 1
+                statusPutShips.text = String(ships) + "/10"
                 
-                if ships == 3{
-                    for n in 1...9{
+                if ships == 10{
+                    for n in 1...100{
                         if ownBoard[n] == 0{
                             let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
                             tempButton?.isEnabled = false
@@ -200,14 +240,26 @@ class GameViewController: UIViewController {
                 let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
                 tempButton?.isHidden = true
             }
+            
+            for n in 1...100{
+                let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
+                tempButton?.isEnabled = true
+            }
         }
         buttonPutShips.isEnabled = false
         
         UIGraphicsBeginImageContext(self.view.frame.size)
         
-        if 
+        if mapa == "lod"{
+            UIImage(named: "lod.png")?.draw(in: self.view.bounds)
+        }else if mapa == "ogien"{
+            UIImage(named: "ogien.png")?.draw(in: self.view.bounds)
+            
+        }else{
+             UIImage(named: "morze.png")?.draw(in: self.view.bounds)
+        }
         
-        UIImage(named: "plays.png")?.draw(in: self.view.bounds)
+        
         let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         self.view.backgroundColor = UIColor(patternImage: image)

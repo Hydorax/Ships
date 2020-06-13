@@ -212,8 +212,8 @@ class dropDownView: UIView, UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         self.delegate.dropDownPressed(string: dropDownOptions[indexPath.row])
-        color =  dropDownOptions[indexPath.row]
-        print(color)
+        mapa =  dropDownOptions[indexPath.row]
+        print(mapa)
         
     }
     
