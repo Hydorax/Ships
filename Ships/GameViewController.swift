@@ -10,6 +10,7 @@ import UIKit
     var a = 0
 class GameViewController: UIViewController {
    
+    @IBOutlet weak var exitButton: UIButton!
     @IBOutlet weak var boardOwn: UIImageView!
     @IBOutlet weak var statusPutShips: UILabel!
     @IBOutlet weak var infoEnemyBoard: UILabel!
@@ -22,7 +23,8 @@ class GameViewController: UIViewController {
     //var ownBoard = [0,0,0,0,0,0,0,0,0,0 ]
     var ownBoard = Array(repeating: 0, count: 101)
     var enemyBoard = Array(repeating: 0, count: 101)
-    var numbers = [1,2,3,4,5,6,7,8,9]
+    //var numbers = [1,2,3,4,5,6,7,8,9]
+    var numbers = [Int](1...100)
     var countShipShootedByMe = 0
     var countShipShootedByEnemy = 0
     var countShipShooted = 0
@@ -47,7 +49,7 @@ class GameViewController: UIViewController {
     
     @IBAction func buttonPutShips(_ sender: Any) {
         status = 1
-        losujRozstawienieStatkow(n:3, max:9)
+        losujRozstawienieStatkow(n:10, max:100)
         buttonPutShips.isHidden = true
         textPutShips.isHidden = true
         boardEnemy.isHidden = false
@@ -124,53 +126,21 @@ class GameViewController: UIViewController {
             
         }else if status == 1{
             
-            let temp = Int(arc4random_uniform(UInt32(numbers.count)))
+            var temp = Int(arc4random_uniform(UInt32(numbers.count)))
             
-            let number = numbers[temp]
+            var number = numbers[temp]
             numbers.remove(at: temp)
-            //let max = UInt32(9)
-            //let min = UInt32(1)
-            ////////////////////
+            
+            if number == 0{
+                print ("Wypierdalaj!")
+                temp = Int(arc4random_uniform(UInt32(numbers.count)))
+                number = numbers[temp]
+            }
             
             
+            a = sender.tag
+            let aa = a - 100
             
-            // repeat{
-            // let index = arc4random_uniform(9)
-            
-            
-            //if numbers.contains(Int(index)){
-            //  temp = 0
-            //}else{
-            // if Int(index) != 0{
-            //numbers.append(Int(index))
-            // liczba = Int(index)
-            //temp = 1
-            //}
-            
-            //}
-            
-            //}while (temp == 1)
-            
-            //let index = arc4random_uniform(max)
-            //var index2 = Int(index)
-            //while (numbers.contains(Int(index))){
-            //    var index = arc4random_uniform(max)
-            //}
-            
-            // if numbers.isEmpty {
-            //  numbers = Array(1 ... 9)
-            // }
-            //let index = Int(arc4random_uniform(UInt32(numbers.count)))
-            //numbers.remove(at: index)
-            //print("wylosowana:", index)
-            
-            
-            
-            
-            ////////////////////
-            
-           ////// a = sender.tag
-            let aa = a - 10
             print(a)
             print(" ")
             //let getRandom = losujPolozenieStatkow(min: 1, max: 9)
@@ -182,9 +152,9 @@ class GameViewController: UIViewController {
                 countShipShootedByMe = countShipShootedByMe + 1
                 tempButton?.isEnabled = false
                 countShipShooted = countShipShooted + 1
-                if countShipShootedByMe == 3{
+                if countShipShootedByMe == 10{
                     
-                    for n in 1...19{
+                    for n in 1...200{
                         let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
                         tempButton?.isEnabled = false
                         
@@ -194,6 +164,8 @@ class GameViewController: UIViewController {
                     print("Oddane strzały:", countShipShooted)
                     print("Celne strzały:", countShipShootedByMe)
                     print("% celności strzałów:", percentageShipShooted)
+                    //self.exitButton.textInputMode = "Powrót do menu"
+                    exitButton.setTitle("Powrót do menu", for: .normal)
                     
                 }
                 
@@ -209,8 +181,8 @@ class GameViewController: UIViewController {
                 tempButton?.backgroundColor = UIColor.red.withAlphaComponent(0.6)
                 countShipShootedByEnemy = countShipShootedByEnemy + 1
                 tempButton?.isEnabled = false
-                if countShipShootedByEnemy == 3{
-                    for n in 1...19{
+                if countShipShootedByEnemy == 10{
+                    for n in 1...200{
                         let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
                         tempButton?.isEnabled = false
                         
@@ -221,6 +193,7 @@ class GameViewController: UIViewController {
                     print("Oddane strzały:", countShipShooted)
                     print("Celne strzały:", countShipShootedByMe)
                     print("% celności strzałów:", percentageShipShooted)
+                    exitButton.setTitle("Powrót do menu", for: .normal)
                 }
             }else{
                 let tempButton = self.view.viewWithTag(number) as? UIButton
@@ -233,17 +206,13 @@ class GameViewController: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.exitButton.backgroundColor = UIColor.gray
         boardEnemy.isHidden = true
         infoEnemyBoard.isHidden = true
         if status == 0{
             for n in 101...200{
                 let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
                 tempButton?.isHidden = true
-            }
-            
-            for n in 1...100{
-                let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
-                tempButton?.isEnabled = true
             }
         }
         buttonPutShips.isEnabled = false
