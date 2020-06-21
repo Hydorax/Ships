@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         self.view.backgroundColor = UIColor(patternImage: image)
         // Do any additional setup after loading the view, typically from a nib.
         self.buttonNewGame.backgroundColor = UIColor.brown
-        self.buttonStatistics.backgroundColor = UIColor.brown
+        
     }
 
     override func didReceiveMemoryWarning() {

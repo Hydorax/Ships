@@ -8,6 +8,13 @@
 
 import UIKit
     var a = 0
+var countShipShootedByMe = 0
+var countShipShootedByEnemy = 0
+var countShipShooted = 0
+var percentageShipShooted:Float = 0
+var countEnemyShipShooted = 0
+var percentageEnemyShipShooted:Float = 0
+var winner = ""
 class GameViewController: UIViewController {
    
     @IBOutlet weak var exitButton: UIButton!
@@ -18,6 +25,7 @@ class GameViewController: UIViewController {
     @IBOutlet weak var boardEnemy: UIImageView!
     @IBOutlet weak var buttonPutShips: UIButton!
     
+    @IBOutlet weak var statButton: UIButton!
     var status = 0
     var ships = 0
     //var ownBoard = [0,0,0,0,0,0,0,0,0,0 ]
@@ -25,10 +33,7 @@ class GameViewController: UIViewController {
     var enemyBoard = Array(repeating: 0, count: 101)
     //var numbers = [1,2,3,4,5,6,7,8,9]
     var numbers = [Int](1...100)
-    var countShipShootedByMe = 0
-    var countShipShootedByEnemy = 0
-    var countShipShooted = 0
-    var percentageShipShooted:Float = 0
+    
     
     func losujRozstawienieStatkow(n:Int,max:Int){
         
@@ -103,6 +108,7 @@ class GameViewController: UIViewController {
                     
                 }
                 buttonPutShips.isEnabled = false
+                buttonPutShips.setTitleColor(.gray, for: .normal)
                 
             }else{
                 ownBoard[a] = 1
@@ -120,22 +126,19 @@ class GameViewController: UIViewController {
                         
                     }
                     buttonPutShips.isEnabled = true
+                    buttonPutShips.setTitleColor(.black, for: .normal)
                 }
             }
             
             
         }else if status == 1{
             
-            var temp = Int(arc4random_uniform(UInt32(numbers.count)))
+            let temp = Int(arc4random_uniform(UInt32(numbers.count)))
             
-            var number = numbers[temp]
+            let number = numbers[temp]
             numbers.remove(at: temp)
             
-            if number == 0{
-                print ("Wypierdalaj!")
-                temp = Int(arc4random_uniform(UInt32(numbers.count)))
-                number = numbers[temp]
-            }
+            
             
             
             a = sender.tag
@@ -166,6 +169,11 @@ class GameViewController: UIViewController {
                     print("% celności strzałów:", percentageShipShooted)
                     //self.exitButton.textInputMode = "Powrót do menu"
                     exitButton.setTitle("Powrót do menu", for: .normal)
+                    winner = name
+                    statButton.isHidden = false
+                    let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                    let newViewController = storyBoard.instantiateViewController(withIdentifier: "StatViewController") as! StatViewController
+                    self.present(newViewController, animated: true, completion: nil)
                     
                 }
                 
@@ -174,6 +182,8 @@ class GameViewController: UIViewController {
                 tempButton?.backgroundColor = UIColor.gray.withAlphaComponent(0.6)
                 tempButton?.isEnabled = false
                 countShipShooted = countShipShooted + 1
+                 percentageShipShooted = ((Float(countShipShootedByMe)/Float(countShipShooted))*100)
+                
             }
             sleep(1)
             if ownBoard[number] == 1{
@@ -181,6 +191,7 @@ class GameViewController: UIViewController {
                 tempButton?.backgroundColor = UIColor.red.withAlphaComponent(0.6)
                 countShipShootedByEnemy = countShipShootedByEnemy + 1
                 tempButton?.isEnabled = false
+                countEnemyShipShooted = countEnemyShipShooted + 1
                 if countShipShootedByEnemy == 10{
                     for n in 1...200{
                         let tempButton = self.view.viewWithTag(Int(n)) as? UIButton
@@ -188,17 +199,24 @@ class GameViewController: UIViewController {
                         
                     }
                     //percentageShipShooted = (Float((countShipShootedByMe/countShipShooted)*100))
-                    percentageShipShooted = ((Float(countShipShootedByMe)/Float(countShipShooted))*100)
+                    percentageEnemyShipShooted = ((Float(countShipShootedByEnemy)/Float(countEnemyShipShooted))*100)
                     //percentageShipShooted = (4/6)*100
                     print("Oddane strzały:", countShipShooted)
                     print("Celne strzały:", countShipShootedByMe)
                     print("% celności strzałów:", percentageShipShooted)
                     exitButton.setTitle("Powrót do menu", for: .normal)
+                    statButton.isHidden = false
+                    winner = "bot"
+                    let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                    let newViewController = storyBoard.instantiateViewController(withIdentifier: "StatViewController") as! StatViewController
+                    self.present(newViewController, animated: true, completion: nil)
                 }
             }else{
+                percentageEnemyShipShooted = ((Float(countShipShootedByEnemy)/Float(countEnemyShipShooted))*100)
                 let tempButton = self.view.viewWithTag(number) as? UIButton
                 tempButton?.backgroundColor = UIColor.gray.withAlphaComponent(0.6)
                 tempButton?.isEnabled = false
+                countEnemyShipShooted = countEnemyShipShooted + 1
             }
             
             
@@ -207,6 +225,7 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.exitButton.backgroundColor = UIColor.gray
+        self.statButton.backgroundColor = UIColor.gray
         boardEnemy.isHidden = true
         infoEnemyBoard.isHidden = true
         if status == 0{
@@ -216,22 +235,59 @@ class GameViewController: UIViewController {
             }
         }
         buttonPutShips.isEnabled = false
+        buttonPutShips.setTitleColor(.gray, for: .normal)
         
-        UIGraphicsBeginImageContext(self.view.frame.size)
-        
-        if mapa == "lod"{
+        if (mapa == "Lod"){
+            UIGraphicsBeginImageContext(self.view.frame.size)
+
             UIImage(named: "lod.png")?.draw(in: self.view.bounds)
-        }else if mapa == "ogien"{
+            let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+            UIGraphicsEndImageContext()
+            self.view.backgroundColor = UIColor(patternImage: image)
+        }else if (mapa == "Ogien"){
+            UIGraphicsBeginImageContext(self.view.frame.size)
+
             UIImage(named: "ogien.png")?.draw(in: self.view.bounds)
+            let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+            UIGraphicsEndImageContext()
+            self.view.backgroundColor = UIColor(patternImage: image)
             
-        }else{
+        }else if (mapa == "Wulkan"){
+            UIGraphicsBeginImageContext(self.view.frame.size)
+            
+            UIImage(named: "wulkan.png")?.draw(in: self.view.bounds)
+            let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+            UIGraphicsEndImageContext()
+            self.view.backgroundColor = UIColor(patternImage: image)
+            
+        } else if (mapa == "Trawa"){
+            UIGraphicsBeginImageContext(self.view.frame.size)
+            
+            UIImage(named: "trawa.png")?.draw(in: self.view.bounds)
+            let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+            UIGraphicsEndImageContext()
+            self.view.backgroundColor = UIColor(patternImage: image)
+            
+        } else if (mapa == "Ksiezyc"){
+            UIGraphicsBeginImageContext(self.view.frame.size)
+            
+            UIImage(named: "ksiezyc")?.draw(in: self.view.bounds)
+            let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+            UIGraphicsEndImageContext()
+            self.view.backgroundColor = UIColor(patternImage: image)
+            
+        }
+        else {
+            UIGraphicsBeginImageContext(self.view.frame.size)
+
              UIImage(named: "morze.png")?.draw(in: self.view.bounds)
+            let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+            UIGraphicsEndImageContext()
+            self.view.backgroundColor = UIColor(patternImage: image)
         }
         
         
-        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        self.view.backgroundColor = UIColor(patternImage: image)
+        
         // Do any additional setup after loading the view.
     }
 

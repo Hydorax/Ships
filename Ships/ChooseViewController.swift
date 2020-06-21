@@ -39,7 +39,7 @@ class ChooseViewController: UIViewController {
         super.viewDidLoad()
         
         button = dropDownBtn.init(frame:CGRect(x:0, y: 0, width: 0, height: 0))
-        button.setTitle("Color", for: .normal)
+        button.setTitle("Wybierz mapę", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(button)
         button.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
@@ -48,7 +48,7 @@ class ChooseViewController: UIViewController {
         button.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         
-        button.dropView.dropDownOptions = ["Woda","Trawa","Wulkan","Ogien","Lod", "Ksiezyc"]
+        button.dropView.dropDownOptions = ["Woda","Trawa","Wulkan","Ogien","Lod"]
         // Do any additional setup after loading the view.
     }
 
